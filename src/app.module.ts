@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { CacheInterceptor, CacheModule, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -8,7 +8,7 @@ import { EmployeeModule } from './employee/employee.module';
 import { TodoModule } from './todo/todo.module';
 import { SharedModule } from './shared/shared.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -31,6 +31,21 @@ import { APP_GUARD } from '@nestjs/core';
       useFactory: (configService: ConfigService) => ({
         ttl: configService.get<number>('throttler.ttl'),      // time-to-live
         limit: configService.get<number>('throttler.limit'),  // max number of requests withing the ttl
+      })
+    }),
+
+    /**
+     * Enable Cache to improve our app's performance.
+     * 
+     * In-memory cache. To use another config, like redis check the doc: https://docs.nestjs.com/techniques/caching#different-stores
+     */
+    CacheModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        isGlobal: true,                               // make it global to all module, no need to import anywhere
+        ttl: configService.get<number>('cache.ttl'),  // seconds
+        max: configService.get<number>('cache.max'),  // max number if items in cache
       })
     }),
 
@@ -70,7 +85,15 @@ import { APP_GUARD } from '@nestjs/core';
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard
-    }
+    },
+
+    /**
+     * Enable CacheInterceptor to all endpoints globally
+     */
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: CacheInterceptor,
+    },
   ],
 })
 export class AppModule { }

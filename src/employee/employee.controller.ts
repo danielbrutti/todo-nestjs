@@ -59,7 +59,7 @@ export class EmployeeController {
   /**
    * Deletes an Employee
    * @param id Employee Id
-   * @returns 
+   * @returns Delete result
    */
   @Delete(':id')
   remove(@Param('id') id: string) {
