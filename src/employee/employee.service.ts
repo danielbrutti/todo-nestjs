@@ -1,6 +1,7 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getConnection, Repository } from 'typeorm';
+import { FilterOperator, PaginateQuery, paginate, Paginated } from 'nestjs-paginate';
+import { Repository } from 'typeorm';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { Employee } from './entities/employee.entity';
@@ -16,9 +17,16 @@ export class EmployeeService {
     return this.employeeRepository.save(CreateEmployeeDto.toEntity(createEmployeeDto));
   }
 
-  findAll() {
-    return this.employeeRepository.find({
-      order: { 'name': 'ASC' },
+  findAll(query: PaginateQuery): Promise<Paginated<Employee>> {
+    return paginate(query, this.employeeRepository, {
+      sortableColumns: ['name'],
+      searchableColumns: ['name'],
+      defaultSortBy: [['name', 'ASC']],
+      defaultLimit: 20,
+      maxLimit: 100,
+      filterableColumns: {
+        name: [FilterOperator.EQ]
+      }
     });
   }
 

@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { FilterOperator, PaginateQuery, paginate, Paginated } from 'nestjs-paginate';
 import { Repository } from 'typeorm';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
@@ -15,9 +16,17 @@ export class TodoService {
     return this.todoRepository.save(CreateTodoDto.toEntity(createTodoDto));
   }
 
-  findAll() {
-    return this.todoRepository.find({
-      order: { 'completed': 'ASC', 'description': 'ASC' },
+  findAll(query: PaginateQuery): Promise<Paginated<Todo>> {
+    return paginate(query, this.todoRepository, {
+      sortableColumns: ['description', 'completed'],
+      searchableColumns: ['description'],
+      defaultSortBy: [['completed', 'ASC'], ['description', 'ASC']],
+      defaultLimit: 20,
+      maxLimit: 100,
+      filterableColumns: {
+        description: [FilterOperator.EQ],
+        completed: [FilterOperator.EQ]
+      }
     });
   }
 

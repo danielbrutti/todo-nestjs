@@ -1,10 +1,9 @@
-import { ApiProperty } from "@nestjs/swagger";
 import { Employee } from "../entities/employee.entity";
 
 export class CreateEmployeeDto {
-    @ApiProperty({
-        description: 'Employee name'
-    })
+    /**
+     * Employee name
+     */
     name: string;
 
     static toEntity(dto: CreateEmployeeDto): Employee {

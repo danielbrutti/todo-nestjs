@@ -1,8 +1,11 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Paginate, PaginateQuery, Paginated } from 'nestjs-paginate';
 import { TodoService } from './todo.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { Todo } from './entities/todo.entity';
+import { PaginateQueryDTO } from '../shared/paginate-query.dto';
 
 @ApiTags('todo')
 @Controller('todo')
@@ -15,8 +18,9 @@ export class TodoController {
   }
 
   @Get()
-  findAll() {
-    return this.todoService.findAll();
+  @ApiBody({type: PaginateQueryDTO})
+  findAll(@Body() @Paginate() query: PaginateQuery): Promise<Paginated<Todo>> {
+    return this.todoService.findAll(query);
   }
 
   @Get(':id')
