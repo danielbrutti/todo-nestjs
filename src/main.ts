@@ -11,6 +11,9 @@ declare const module: any;
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  /**
+   * Configure OpenAPI
+   */
   const config = new DocumentBuilder()
     .setTitle('TODO')
     .setDescription('The TODO REST API')
@@ -44,9 +47,13 @@ async function bootstrap() {
 
   await app.listen(3000);
 
+  /**
+   * Enable Hot Reload
+   */
   if (module.hot) {
     module.hot.accept();
     module.hot.dispose(() => app.close());
   }
+
 }
 bootstrap();

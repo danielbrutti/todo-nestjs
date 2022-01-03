@@ -18,6 +18,7 @@ export class TodoController {
   }
 
   @Get()
+  // Use of `PaginateQueryDTO` to make sure OpenAPI can read the schema definition.
   @ApiBody({type: PaginateQueryDTO})
   findAll(@Body() @Paginate() query: PaginateQuery): Promise<Paginated<Todo>> {
     return this.todoService.findAll(query);

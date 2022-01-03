@@ -13,10 +13,20 @@ export class EmployeeService {
     @InjectRepository(Employee) private employeeRepository: Repository<Employee>,
   ) { }
 
+  /**
+   * Creates a new Employee
+   * @param createEmployeeDto Employee DTO
+   * @returns A new Employee
+   */
   create(createEmployeeDto: CreateEmployeeDto) {
     return this.employeeRepository.save(CreateEmployeeDto.toEntity(createEmployeeDto));
   }
 
+  /**
+   * Return a list with pagination
+   * @param query Query to search by and paginate
+   * @returns A paginated list
+   */
   findAll(query: PaginateQuery): Promise<Paginated<Employee>> {
     return paginate(query, this.employeeRepository, {
       sortableColumns: ['name'],
@@ -30,10 +40,22 @@ export class EmployeeService {
     });
   }
 
+  /**
+   * Find an Employee by ID
+   * @param id Employe ID
+   * @returns 
+   */
   findOne(id: string) {
     return this.employeeRepository.findOne(id);
   }
 
+  /**
+   * Update an Employee
+   * @param id Employee ID
+   * @param updateEmployeeDto DTO
+   * @returns An updated Employee
+   * @throws NotFoundException when employee does not exists
+   */
   async update(id: string, updateEmployeeDto: UpdateEmployeeDto) {
     const employee: Employee = await this.employeeRepository.findOne(id);
     if (!employee) {
@@ -42,6 +64,11 @@ export class EmployeeService {
     return this.employeeRepository.save(UpdateEmployeeDto.toEntity(employee, updateEmployeeDto));
   }
 
+  /**
+   * Delete an Employee
+   * @param id Employee ID
+   * @returns Delete result
+   */
   remove(id: string) {
     return this.employeeRepository.delete(id);
   }

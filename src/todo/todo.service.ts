@@ -12,10 +12,20 @@ export class TodoService {
     @InjectRepository(Todo) private todoRepository: Repository<Todo>,
   ) { }
 
+  /**
+   * Creates a new Todo
+   * @param createTodoDto Todo DTO
+   * @returns A new Todo
+   */
   create(createTodoDto: CreateTodoDto) {
     return this.todoRepository.save(CreateTodoDto.toEntity(createTodoDto));
   }
 
+  /**
+   * Return a list with pagination
+   * @param query Query to search by and paginate
+   * @returns A paginated list
+   */
   findAll(query: PaginateQuery): Promise<Paginated<Todo>> {
     return paginate(query, this.todoRepository, {
       sortableColumns: ['description', 'completed'],
@@ -30,10 +40,22 @@ export class TodoService {
     });
   }
 
+  /**
+   * Find a Todo by ID
+   * @param id Employe ID
+   * @returns 
+   */
   findOne(id: string) {
     return this.todoRepository.findOne(id);
   }
 
+  /**
+   * Update a Todo
+   * @param id Todo ID
+   * @param updateTodoDto DTO
+   * @returns An updated Todo
+   * @throws NotFoundException when Todo does not exists
+   */
   async update(id: string, updateTodoDto: UpdateTodoDto) {
     const todo: Todo = await this.todoRepository.findOne(id);
     if (!todo) {
@@ -42,6 +64,11 @@ export class TodoService {
     return this.todoRepository.save(UpdateTodoDto.toEntity(todo, updateTodoDto));
   }
 
+  /**
+   * Delete a Todo
+   * @param id Todo ID
+   * @returns Delete result
+   */
   remove(id: string) {
     return this.todoRepository.delete(id);
   }
