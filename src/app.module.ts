@@ -4,7 +4,6 @@ import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from '../config/configuration';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { EmployeeModule } from './employee/employee.module';
 import { TodoModule } from './todo/todo.module';
 import { SharedModule } from './shared/shared.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
@@ -63,7 +62,9 @@ import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
         database: configService.get('database.db'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: true,
-        autoLoadEntities: true
+        autoLoadEntities: true,
+        logger: 'debug',
+        logging: 'all'
       }),
       inject: [ConfigService],
     }),
@@ -71,7 +72,6 @@ import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
     /**
      * App Modules
      */
-    EmployeeModule,
     TodoModule,
     SharedModule,
   ],

@@ -1,8 +1,8 @@
 export default () => ({
     port: parseInt(process.env.PORT, 10) || 3000,
     throttler: {
-        ttl: 60,    // time to live
-        limit: 10   // max number of requests withing ttl
+        ttl: 60,      // time to live
+        limit: 1000   // max number of requests withing ttl
     },
     cache: {
         ttl: 5,     // time to live objects in cache

@@ -3,20 +3,33 @@ import { Todo } from "../entities/todo.entity";
 
 export class CreateTodoDto {
     @ApiProperty({
-        description: 'The description of the pending TODO'
+        description: 'The description of the pending task'
     })
     description: string;
 
     @ApiProperty({
-        description: 'TODO is pending or completed',
+        description: 'Due date',
+        default: false
+    })
+    due: Date;
+
+    @ApiProperty({
+        description: 'User wants a reminder of the task',
+        default: false
+    })
+    remind: boolean;
+
+    @ApiProperty({
+        description: 'When to send reminder to user',
+        default: false
+    })
+    alarm: Date;
+
+    @ApiProperty({
+        description: 'Task is pending or completed',
         default: false
     })
     completed: boolean;
-
-    @ApiProperty({
-        description: 'Owner employee'
-    })
-    employeeId: number;
 
     static toEntity(dto: CreateTodoDto): Todo {
         return Object.assign(
@@ -24,7 +37,9 @@ export class CreateTodoDto {
             {
                 completed: false,
                 description: dto.description,
-                employee: { id: dto.employeeId }
+                due: dto.due,
+                remind: dto.remind,
+                alarm: dto.alarm,
             }
         );
     }

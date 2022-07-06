@@ -3,9 +3,8 @@ import { Paginate, PaginateQuery, Paginated } from 'nestjs-paginate';
 import { TodoService } from './todo.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { Todo } from './entities/todo.entity';
-import { PaginateQueryDTO } from '../shared/paginate-query.dto';
 
 @ApiTags('todo')
 @Controller('todo')
@@ -25,12 +24,10 @@ export class TodoController {
   /**
    * Get Todo with Pagination
    * @param query Search and pagination query
-   * @returns A list of Employee
+   * @returns A list of Todo
    */
   @Get()
-  // Use of `PaginateQueryDTO` to make sure OpenAPI can read the schema definition.
-  @ApiBody({type: PaginateQueryDTO})
-  findAll(@Body() @Paginate() query: PaginateQuery): Promise<Paginated<Todo>> {
+  findAll(@Paginate() query: PaginateQuery): Promise<Paginated<Todo>> {
     return this.todoService.findAll(query);
   }
 

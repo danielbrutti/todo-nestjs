@@ -9,7 +9,10 @@ export class UpdateTodoDto extends PartialType(CreateTodoDto) {
             todo,
             {
                 completed: dto.completed,
-                description: dto.description
+                description: dto.description,
+                due: dto.due,
+                remind: dto.remind,
+                alarm: dto.alarm,
             }
         );
     }
